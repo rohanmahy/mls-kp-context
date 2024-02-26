@@ -1,0 +1,214 @@
+
+
+
+
+MLS                                                              R. Mahy
+Internet-Draft                                                      Wire
+Intended status: Informational                           22 October 2023
+Expires: 24 April 2024
+
+
+     KeyPackage Context Extension for Message Layer Security (MLS)
+                    draft-mahy-mls-kp-context-latest
+
+Abstract
+
+   This document describes a Message Layer Security (MLS) KeyPackage
+   extension to convey a specific context or anticipated use for the
+   KeyPackage.  It is useful when a client provides the KeyPackage out-
+   of-band to another client, and wants the specific KeyPackage used
+   only in the anticipated context, for example a specific MLS group.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-mahy-mls-kp-context/.
+
+   Discussion of this document takes place on the MLS Working Group
+   mailing list (mailto:mls@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/mls/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/mls/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/rohan-wire/mls-kp-context/.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 24 April 2024.
+
+Copyright Notice
+
+   Copyright (c) 2023 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Terminology
+   2.  Introduction
+   3.  Extension Description
+   4.  IANA Considerations
+     4.1.  kp_context MLS Extension Type
+     4.2.  urn:ietf:mls:kp_context:group_id URN registration
+   5.  Security Considerations
+   6.  Normative References
+   Author's Address
+
+1.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   The terms MLS client, MLS group, LeafNode, GroupContext, KeyPackage,
+   GroupContextExtensions Proposal, Credential, CredentialType, and
+   RequiredCapabilities have the same meanings as in the MLS protocol
+   [I-D.ietf-mls-protocol].
+
+2.  Introduction
+
+   In some use cases of MLS, a client might wish to provide a KeyPackage
+   to another client, but communicate that the specific KeyPackage is
+   only to be used in a specific context, for example to join a specific
+   MLS group.  This document describes a KeyPackage extension that can
+   convey that context.
+
+3.  Extension Description
+
+   This document specifies a KeyPackage MLS extension kp_context of type
+   ContextPair.  The syntax is described using the TLS Presentation
+   Language [RFC8446]
+
+   Each PerDomainTrustAnchor represents a specific identity domain which
+   is expected and authorized to participate in the MLS group.  It
+   contains the domain name and the specific trust anchor used to
+   validate identities for members in that domain.
+
+   enum {
+     reserved(0),
+     groupid(1),
+     uri(2),
+     domain(3),
+     jwk_thumbprint(4)
+     (255)
+   } ContextType;
+
+   struct {
+       ContextType context_type;
+       opaque context_value<V>;
+   } ContextPair;
+
+   ContextPair kp_context;
+
+4.  IANA Considerations
+
+   This document proposes registration of a new MLS Extension Type.
+
+   RFC EDITOR: Please replace XXXX throughout with the RFC number
+   assigned to this document
+
+4.1.  kp_context MLS Extension Type
+
+   The kp_context MLS Extension Type is used inside KeyPackage objects.
+   It contains a URN Anchors object representing the trust anchors which
+   are expected for identity validation inside the MLS group.
+
+     Template:
+     Value: 0x000B
+     Name: kp_context
+     Message(s): This extension may appear in KeyPackage objects
+     Recommended: Y
+     Reference: RFC XXXX
+
+4.2.  urn:ietf:mls:kp_context:group_id URN registration
+
+   Namespace Identifier:  Requested of IANA (formal) or assigned by IANA
+      (informal).
+
+   Version:  1
+
+   Date:  2023-08-01
+
+   Registrant:
+     Rohan Mahy
+     rohan.ietf@gmail.com
+
+   Purpose:  Described in Section 3 of RFCXXXX.
+
+   Syntax:  Described in Section 3 of RFCXXXX.
+
+   Assignment:  Described in Section 4.1 of RFCXXXX.
+
+   Security and Privacy:  Described in Section 5 of RFCXXXX.
+
+   Interoperability:  Described in Section 3 of this document.
+
+   Resolution:  Described in Section 3 of this document.
+
+   Documentation:  RFCXXXX
+
+   Additional Information:  none
+
+   Revision Information:  n/a
+
+5.  Security Considerations
+
+   The Security Considerations of MLS apply.
+
+   The use of this extension may reveal the client's intentions or
+   wishes in an out-of-band protocol, which may have weaker privacy
+   protections than MLS handshake messages.
+
+6.  Normative References
+
+   [I-D.ietf-mls-protocol]
+              Barnes, R., Beurdouche, B., Robert, R., Millican, J.,
+              Omara, E., and K. Cohn-Gordon, "The Messaging Layer
+              Security (MLS) Protocol", Work in Progress, Internet-
+              Draft, draft-ietf-mls-protocol-20, 27 March 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-mls-
+              protocol-20>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
+              <https://www.rfc-editor.org/rfc/rfc8446>.
+
+Author's Address
+
+   Rohan Mahy
+   Wire
+   Email: rohan.mahy@wire.com
